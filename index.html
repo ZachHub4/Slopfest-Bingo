@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#171717">
+<meta name="color-scheme" content="dark light">
+<title>Slopfest Bingo</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23171717'/%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%23fff' stroke-width='8'/%3E%3Cpath fill='%23fff' d='M28 47C28 33 38 25 50 25S72 33 72 47V55A3 3 0 0 1 66 55V51H61V67A3.5 3.5 0 0 1 54 67V51H47V61A3.5 3.5 0 0 1 40 61V51H34V58A3 3 0 0 1 28 58Z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body {
+    --nav-bg-color: #171717;
+    --nav-text-color: #fff;
+    --primary-lighter: #d5f0da;
+    --primary-light: #86d095;
+    --rim: linear-gradient(110deg, #a53ce2, #1cb654, #a53ce2);
+    --line-start: #a53ce2;
+    --line-end: #1cb654;
+  }
+
+  body.dark {
+    --bg-color: #262626;
+    --bg-hover: #171717;
+    --bg-active: #0a0a0aaa;
+    --text-color: #f5f5f5;
+    --shadow-color: #ffffff80;
+    --logo-src: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='%23fff' stroke-width='8'/%3E%3Cpath fill='%23fff' d='M28 47C28 33 38 25 50 25S72 33 72 47V55A3 3 0 0 1 66 55V51H61V67A3.5 3.5 0 0 1 54 67V51H47V61A3.5 3.5 0 0 1 40 61V51H34V58A3 3 0 0 1 28 58Z'/%3E%3C/svg%3E");
+    --btn-face: linear-gradient(110deg, #211128, #102119);
+    --btn-interactive: linear-gradient(110deg, #702891, #197344);
+    --btn-label: #fff;
+  }
+
+  body.light {
+    --bg-color: #fff;
+    --bg-hover: #d4d4d4;
+    --bg-active: #a3a3a3aa;
+    --text-color: #222;
+    --shadow-color: #00000080;
+    --logo-src: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='44' fill='none' stroke='%23000' stroke-width='8'/%3E%3Cpath fill='%23000' d='M28 47C28 33 38 25 50 25S72 33 72 47V55A3 3 0 0 1 66 55V51H61V67A3.5 3.5 0 0 1 54 67V51H47V61A3.5 3.5 0 0 1 40 61V51H34V58A3 3 0 0 1 28 58Z'/%3E%3C/svg%3E");
+    --btn-face: linear-gradient(110deg, #faf4ff, #f1fbf5);
+    --btn-interactive: linear-gradient(110deg, #d5a6ef, #a0e8ba);
+    --btn-label: #222;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, p { margin: 0; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
+
+  /* ---------- Header ---------- */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.375rem;
+    min-height: calc(3.125rem + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 1rem 0;
+    background-color: var(--nav-bg-color);
+    color: var(--nav-text-color);
+    box-shadow: 0 -6px 10px 5px #00000080;
+  }
+
+  .header-left, .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .logo {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    color: #fff;
+  }
+
+  .nav-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.3125rem;
+    padding: 0.625rem;
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+    touch-action: manipulation;
+  }
+
+  .nav-link::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 6px;
+    width: 0;
+    height: 2px;
+    background-color: #fff;
+    transition: width 0.4s;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:not(:disabled):hover::before { width: 100%; }
+    .nav-toggle:hover { background-color: #4d4d4db3; }
+  }
+
+  .nav-link:disabled { opacity: 0.45; cursor: default; }
+  .nav-link:focus-visible { outline: 2px solid var(--primary-light); outline-offset: -2px; border-radius: 0.375rem; }
+  .nav-link svg { flex-shrink: 0; }
+
+  .share-label-short { display: none; }
+
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.3125rem;
+    color: #fff;
+    transition: background-color 0.2s ease-out;
+  }
+
+  .nav-toggle:focus-visible { outline: 2px solid var(--primary-light); outline-offset: -2px; }
+
+  .theme-toggle {
+    width: 2.8125rem;
+    height: 2.8125rem;
+    padding: 0.625rem;
+  }
+
+  .theme-toggle svg { width: 100%; height: 100%; }
+
+  .rules-toggle {
+    gap: 0.25rem;
+    height: 2.8125rem;
+    padding: 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .rules-toggle svg { width: 0.75rem; height: 0.75rem; }
+
+  /* ---------- Main / board ---------- */
+  main {
+    --board-gap: 1rem;
+    --board-controls-height: 3.25rem;
+    --board-padding-top: 1rem;
+    --board-padding-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--board-padding-top) 1rem var(--board-padding-bottom);
+    overflow-x: clip;
+  }
+
+  .game { width: min(100%, 50rem); }
+
+  .board-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: var(--board-controls-height);
+    margin-bottom: var(--board-gap);
+  }
+
+  .win-reveal {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 0.32s, opacity 0.2s;
+  }
+
+  .win-reveal.show { grid-template-rows: 1fr; opacity: 1; }
+  .win-reveal > div { min-height: 0; overflow: hidden; }
+
+  .winner-text {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Gradient-rim button */
+  .gen-button {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0.75rem 1.25rem;
+    border: 3px solid transparent;
+    border-radius: 0.625rem;
+    background: var(--btn-face) padding-box, var(--rim) border-box;
+    background-size: 100% 100%, 200% 200%;
+    color: var(--btn-label);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+    touch-action: manipulation;
+    box-shadow: 0 3px 8px #0000001a;
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+
+  .gen-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 0.375rem;
+    background: var(--btn-interactive);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-in;
+  }
+
+  .gen-button span { position: relative; z-index: 1; pointer-events: none; }
+  .gen-button:focus-visible { outline: 2px solid var(--text-color); outline-offset: 5px; }
+  .gen-button:focus-visible::before { opacity: 0.8; }
+  .gen-button:active { transform: translateY(1px) scale(0.97); }
+  .gen-button:active::before { opacity: 1; transition-duration: 0s; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .gen-button:hover:not(:active)::before { opacity: 0.8; }
+    .tile:not(.free):not(.placeholder):hover { background: var(--bg-hover); }
+  }
+
+  @media (pointer: coarse) {
+    .gen-button { min-height: 3.25rem; padding-inline: 1.5rem; }
+  }
+
+  .board {
+    --grid-color: color-mix(in srgb, var(--text-color) 18%, var(--bg-color));
+    --frame-color: color-mix(in srgb, var(--text-color) 40%, var(--bg-color));
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    gap: 1px;
+    width: 100%;
+    height: 31.25rem;
+    background: var(--grid-color);
+    border: 1px solid var(--frame-color);
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 1.5rem var(--shadow-color);
+    overflow: hidden;
+  }
+
+  .tile {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 0.5rem;
+    background: var(--bg-color);
+    color: var(--text-color);
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.2;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+    transition: background-color 0.15s;
+  }
+
+  .tile.placeholder, .tile.free { cursor: default; }
+  .tile:not(.free):not(.placeholder):active { background-color: var(--bg-active); }
+  .tile:focus-visible { outline: 2px solid var(--primary-light); outline-offset: -3px; }
+
+  .tile.checked {
+    background: var(--bg-hover);
+    color: color-mix(in srgb, var(--text-color) 75%, var(--bg-hover));
+  }
+
+  .tile-label {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    pointer-events: none;
+  }
+
+  .tile.spinning .tile-label { animation: reel 0.07s linear infinite; }
+  .tile.landed .tile-label { animation: land 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+
+  @keyframes reel {
+    from { transform: translateY(-60%); opacity: 0.35; }
+    to   { transform: translateY(60%); opacity: 0.35; }
+  }
+
+  @keyframes land {
+    from { transform: translateY(-35%); opacity: 0.4; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  .stamp {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 55%;
+    max-width: 4.5rem;
+    max-height: 75%;
+    aspect-ratio: 1;
+    background-image: var(--logo-src);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(1.6) rotate(-25deg);
+    transition: opacity 0.2s, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .tile.checked .stamp {
+    opacity: 0.13;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  .tile.free .stamp { width: 60%; opacity: 0.16; transform: translate(-50%, -50%); }
+
+  .bingo-lines {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .bingo-lines path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .bingo-lines .outline { stroke: var(--bg-color); stroke-width: 8px; opacity: 0.7; }
+  .bingo-lines .marker { stroke-width: 5px; opacity: 0.9; }
+  .bingo-lines g { animation: drawLine 0.55s ease-out both; }
+  .bingo-lines g.vertical { animation-name: drawLineVertical; }
+
+  @keyframes drawLine {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0); }
+  }
+
+  @keyframes drawLineVertical {
+    from { clip-path: inset(0 0 100% 0); }
+    to   { clip-path: inset(0); }
+  }
+
+  /* ---------- Rules side panel ---------- */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background-color: #00000080;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s;
+  }
+
+  .panel-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 48rem);
+    height: 100dvh;
+    background-color: #1a1a1ae6;
+    -webkit-backdrop-filter: blur(1rem);
+    backdrop-filter: blur(1rem);
+    color: var(--nav-text-color);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.35s ease-out, visibility 0s 0.35s;
+  }
+
+  .side-panel.open {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.35s ease-out;
+  }
+
+  .panel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    min-height: calc(3.125rem + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) 1rem 0;
+    flex-shrink: 0;
+  }
+
+  .panel-close {
+    background-color: #4d4d4db3;
+  }
+
+  .panel-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 0;
+    padding: 1.5rem clamp(1rem, 4vw, 2rem) calc(2rem + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .rules-section { display: flex; flex-direction: column; gap: 0.625rem; }
+  .rules-section > p { color: #ccc; font-size: 0.9375rem; }
+  .rules-section h1 { font-size: clamp(1.875rem, 4vw, 2.5rem); font-weight: 800; line-height: 1.1; }
+  .rules-section h2 { font-size: 1.25rem; font-weight: 800; line-height: 1.3; }
+
+  .how-to-play {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.375rem;
+    font-size: 0.9375rem;
+  }
+
+  .how-to-play > li { padding-left: 0.3125rem; }
+
+  .dictionary-toggle {
+    display: inline-block;
+    width: fit-content;
+    margin: 0.125rem 0 0.375rem;
+    padding: 0.5rem 0.625rem;
+    background-color: #ffffff1a;
+    border: 1px solid #fff3;
+    border-radius: 0.5rem;
+  }
+
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .toggle-input { position: absolute; width: 0; height: 0; opacity: 0; }
+
+  .toggle-slider {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: 3rem;
+    height: 1.5rem;
+    background-color: #ffffff4d;
+    border-radius: 1rem;
+    transition: background-color 0.3s;
+  }
+
+  .toggle-slider::before {
+    content: "";
+    position: absolute;
+    left: 0.1875rem;
+    bottom: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+
+  .toggle-input:checked + .toggle-slider { background-color: #439d5a; }
+  .toggle-input:checked + .toggle-slider::before { transform: translateX(1.5rem); }
+  .toggle-input:focus-visible + .toggle-slider { outline: 2px solid #fff; outline-offset: 3px; }
+
+  .dictionary-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 42rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dictionary-entry { padding: 0.625rem 0; overflow-wrap: anywhere; }
+  .dictionary-entry + .dictionary-entry { border-top: 1px solid #ffffff24; }
+  .dictionary-entry:first-child { padding-top: 0; }
+  .dictionary-term { margin: 0; font-size: 1rem; font-weight: 500; line-height: 1.5; letter-spacing: -0.015em; }
+  .dictionary-description { margin: 0.25rem 0 0; color: #ccc; font-size: 0.9375rem; line-height: 1.5; }
+  .dictionary-empty { color: #ccc; font-size: 0.9375rem; }
+
+  /* ---------- Phones ---------- */
+  @media (max-width: 480px) {
+    .header { padding-inline: 0.5rem; }
+    .share-label-full { display: none; }
+    .share-label-short { display: inline; }
+    .nav-link { padding-inline: 0.375rem; font-size: 0.875rem; }
+
+    main {
+      --board-gap: 0.75rem;
+      --board-padding-top: 0.75rem;
+      --board-padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
+      padding-inline: 0.5rem;
+    }
+
+    .board {
+      height: clamp(22.5rem, calc(100svh - 3.125rem - env(safe-area-inset-top) - var(--board-controls-height) - var(--board-gap) - var(--board-padding-top) - var(--board-padding-bottom)), 31.25rem);
+      box-shadow: 0 4px 24px -4px color-mix(in srgb, var(--shadow-color) 55%, transparent);
+    }
+
+    .tile { padding: 0.25rem; font-size: clamp(0.75rem, 2.8vw, 0.8125rem); }
+    .bingo-lines .marker { stroke-width: 4px; }
+    .bingo-lines .outline { stroke-width: 7px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .stamp, .gen-button, .gen-button::before, .win-reveal,
+    .side-panel, .panel-overlay, .toggle-slider, .toggle-slider::before { transition: none; }
+    .tile.spinning .tile-label, .tile.landed .tile-label, .bingo-lines g { animation: none; }
+    .gen-button:active { transform: none; }
+  }
+</style>
+</head>
+<body class="dark">
+<script>
+  // Apply the saved theme before first paint so there's no flash
+  (function () {
+    let theme = null;
+    try { theme = localStorage.getItem("slopfestTheme"); } catch (e) {}
+    if (theme !== "light" && theme !== "dark") {
+      theme = window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+    document.body.className = theme;
+  })();
+</script>
+
+<header class="header">
+  <div class="header-left">
+    <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="Slopfest Bingo logo">
+      <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="8"/>
+      <path fill="currentColor" d="M28 47C28 33 38 25 50 25S72 33 72 47V55A3 3 0 0 1 66 55V51H61V67A3.5 3.5 0 0 1 54 67V51H47V61A3.5 3.5 0 0 1 40 61V51H34V58A3 3 0 0 1 28 58Z"/>
+    </svg>
+    <button type="button" class="nav-link" id="shareBtn" disabled title="Generate a board to share it">
+      <span id="shareLabel"><span class="share-label-full">Share board</span><span class="share-label-short">Share</span></span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"/></svg>
+    </button>
+  </div>
+  <div class="header-right">
+    <button type="button" class="nav-toggle theme-toggle" id="themeBtn" aria-label="Switch to light mode"></button>
+    <button type="button" class="nav-toggle rules-toggle" id="rulesBtn" aria-controls="rulesPanel" aria-expanded="false">
+      <span>Rules</span>
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 2l7 6-7 6z" fill="currentColor"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <div class="game">
+    <output class="sr-only" id="winAnnouncement" aria-live="polite" aria-atomic="true"></output>
+    <div class="board-controls">
+      <button type="button" class="gen-button" id="generateBtn"><span>Generate board</span></button>
+      <div class="win-reveal" id="winReveal" aria-hidden="true">
+        <div><p class="winner-text" id="winnerText">Bingo!</p></div>
+      </div>
+    </div>
+    <section class="board" id="board" aria-label="Empty bingo board. Generate a board to play."></section>
+  </div>
+</main>
+
+<div class="panel-overlay" id="panelOverlay"></div>
+<section class="side-panel" id="rulesPanel" role="dialog" aria-modal="true" aria-labelledby="rulesHeading">
+  <div class="panel-bar">
+    <button type="button" class="nav-toggle theme-toggle" id="panelThemeBtn" aria-label="Switch to light mode"></button>
+    <button type="button" class="nav-toggle rules-toggle panel-close" id="closeBtn">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 2L4 8l7 6z" fill="currentColor"/></svg>
+      <span>Close</span>
+    </button>
+  </div>
+  <div class="panel-scroll">
+    <div class="rules-section">
+      <h1 id="rulesHeading">Slopfest Bingo Ruleset</h1>
+      <p>Spot the prompts on your bingo board and mark them off as the action unfolds.</p>
+    </div>
+    <section class="rules-section" aria-labelledby="howHeading">
+      <h2 id="howHeading">How to play</h2>
+      <ol class="how-to-play">
+        <li><strong>Deal a card.</strong> Tap “Generate board” to get a fresh 5×5 board. The middle square is free.</li>
+        <li><strong>Spot it. Mark it.</strong> Tap a square whenever you see its prompt happen. Tap again to unmark it.</li>
+        <li><strong>Get bingo!</strong> Complete a row, column, or diagonal. Keep going and mark every square for a blackout.</li>
+      </ol>
+    </section>
+    <section class="rules-section" aria-labelledby="dictHeading">
+      <h2 id="dictHeading">Square guide</h2>
+      <p>Not sure what a prompt means? The terms on your current board are listed here, or turn on “Show all terms” to browse every prompt.</p>
+      <div class="dictionary-toggle">
+        <label class="toggle-label">
+          <input type="checkbox" class="toggle-input" id="showAllToggle">
+          <span class="toggle-slider" aria-hidden="true"></span>
+          <span>Show all terms</span>
+        </label>
+      </div>
+      <ul class="dictionary-list" id="dictionaryList" aria-label="Bingo terms"></ul>
+    </section>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   PROMPTS — replace these placeholders with your real list.
+   Needs at least 24 entries to fill a board without repeats.
+   Each entry has:
+     text: what shows on the bingo square
+     desc: the explanation shown in the Square guide (optional)
+   ============================================================ */
+const PROMPTS = [
+  { text: "Acknowledge camera (Hey there!)", desc: "Hey there!" },
+  { text: "Airing it out (deeply arm cut tank top)", desc: "Deeply arm cut tank top." },
+  { text: "American flag clothing" },
+  { text: "Arguing in public" },
+  { text: "Bandage dude" },
+  { text: "Barefoot" },
+  { text: "Barf-o-rama (puking on ground / trashcan)", desc: "Puking on ground / trashcan." },
+  { text: "Beach goth" },
+  { text: "Big Red (bad sunburn)", desc: "Bad sunburn." },
+  { text: "Bouncer bouncing" },
+  { text: "Can you see me now? (call home about camera)", desc: "Call home about camera." },
+  { text: "Carrying an instrument" },
+  { text: "Chug" },
+  { text: "Cop on foot (a real cop)", desc: "A real cop." },
+  { text: "Cowboy hat" },
+  { text: "Crying" },
+  { text: "Dancing" },
+  { text: "Dead Parrot Head", desc: "A parrot head is someone who is way too into Jimmy Buffet. You're looking for scuzzy dudes that tried retiring early to Key West and they have blown through their money in margaritas, they walk around like zombies." },
+  { text: "Dog out too late", desc: "A dog should not be out past 9:30pm and should be sleeping." },
+  { text: "Dora (backpack)", desc: "Backpack." },
+  { text: "Double fisting", desc: "Someone walks around with two beers or mix drinks with one in each hand." },
+  { text: "Dropped / Spilled food or drink" },
+  { text: "Dropped something" },
+  { text: "Drunk walk" },
+  { text: "Fanny pack" },
+  { text: "Fist bump" },
+  { text: "Go on now, Git! (new overstayed your welcome)", desc: "New overstayed your welcome." },
+  { text: "Gurple clothing", desc: "A combination of purple and green clothing." },
+  { text: "Handshake" },
+  { text: "Head sheen", desc: "A bald person walks by and lights reflect off their shiny head." },
+  { text: "High five" },
+  { text: "Honka Honka (boob or cheek squeeze)", desc: "Boob or cheek squeeze." },
+  { text: "Hoofin it", desc: "It doesn't say \"Jog\", it says \"Hoofin it\"." },
+  { text: "Hug" },
+  { text: "Jeans and flip flops" },
+  { text: "Kid out too late", desc: "A kid should not be out past 9:30pm and should be put to bed." },
+  { text: "Litterbug" },
+  { text: "Marvel fan" },
+  { text: "Matching outfits" },
+  { text: "MeeMaw", desc: "A very old lady that has no business being out late. Think \"Granny, what are you doing out at midnight\"." },
+  { text: "Mullet" },
+  { text: "New boot goofing (cowboy or any flashy, silly boots)", desc: "Cowboy or any flashy, silly boots." },
+  { text: "Nose pick / Wedgie pull / Crotch grab / Spit" },
+  { text: "Offensive T-shirt" },
+  { text: "On the fence about entering" },
+  { text: "Oscar the Grouch (security rolling the trashcans)", desc: "Security rolling the trashcans." },
+  { text: "PeePaw (Grandfather in American)", desc: "Grandfather in American." },
+  { text: "Rocking out (air guitar or drumming)", desc: "Air guitar or drumming." },
+  { text: "Scooter costume (someone decorated their mobility device)", desc: "Someone decorated their mobility device." },
+  { text: "Selfie" },
+  { text: "Sitting on street" },
+  { text: "Skateboard" },
+  { text: "Sports jersey (T-shirts do not count)", desc: "T-shirts do not count." },
+  { text: "Sucking on a chili dog" },
+  { text: "Sunglasses at night" },
+  { text: "Sweet ‘stache" },
+  { text: "There’s Waldo (looks like him eh?)", desc: "Looks like him eh?" },
+  { text: "Tricycle" },
+  { text: "Trip" },
+  { text: "Twerking" },
+  { text: "Walking past 3+ times" },
+  { text: "Weekend at Burneys (two people helping someone walk)", desc: "Two people helping someone walk." },
+  { text: "Wheelchair" },
+  { text: "Where’d they go? (wearing camo)", desc: "Wearing camo." },
+  { text: "Yawning" },
+  { text: "Yelling to wait up" },
+  { text: "Mario and Luigi (both brothers)", desc: "Both brothers." },
+  { text: "Quadstume", desc: "A group of 4 with matching costumes or a costume theme (i.e. Wizard of Oz)." },
+  { text: "Hugh (someone walking in a red bathrobe)", desc: "Someone walking in a red bathrobe." },
+  { text: "Fresh paint job (someone in full body paint)", desc: "Someone in full body paint." },
+  { text: "Tasty Pasty (someone’s pasties look like a sweet treat)", desc: "Someone’s pasties look like a sweet treat." },
+  { text: "Hello Dolly! (Dolly Parton is back with us)", desc: "Dolly Parton is back with us." },
+  { text: "Beetlejuice (not the one from Stern)", desc: "Not the one from Stern." },
+  { text: "UTV Ambulance" },
+  { text: "Light up shoes (like Skechers for adults)", desc: "Like Skechers for adults." },
+  { text: "Thong dude (guy leaving little to the imagination)", desc: "Guy leaving little to the imagination." },
+  { text: "Kobe! (someone shoots for the trashcan)", desc: "Someone shoots for the trashcan." },
+  { text: "Wing Whack", desc: "Someone’s excessive costume appendage really gets somebody." },
+  { text: "DC fan" },
+  { text: "Inflatable costume" },
+  { text: "Kid story character", desc: "Peppa Pig, Bluey, Curious George type stuff." },
+  { text: "Lazy hat costume (dude just bought a hat for a costume)", desc: "Dude just bought a hat for a costume." },
+  { text: "Weapon in action (someone swings a sword or something)", desc: "Someone swings a sword or something." }
+];
+
+const FREE_INDEX = 12; // center of a 5x5 grid
+const SAVE_KEY = "slopfestBingoState";
+const THEME_KEY = "slopfestTheme";
+
+const boardEl = document.getElementById("board");
+const generateBtn = document.getElementById("generateBtn");
+const shareBtn = document.getElementById("shareBtn");
+const shareLabel = document.getElementById("shareLabel");
+const themeBtns = [document.getElementById("themeBtn"), document.getElementById("panelThemeBtn")];
+const rulesBtn = document.getElementById("rulesBtn");
+const closeBtn = document.getElementById("closeBtn");
+const rulesPanel = document.getElementById("rulesPanel");
+const panelOverlay = document.getElementById("panelOverlay");
+const showAllToggle = document.getElementById("showAllToggle");
+const dictionaryList = document.getElementById("dictionaryList");
+const winReveal = document.getElementById("winReveal");
+const winnerText = document.getElementById("winnerText");
+const winAnnouncement = document.getElementById("winAnnouncement");
+
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let picks = [];          // 24 indices into PROMPTS, in board order (skipping the free space)
+let marked = new Set();  // board positions 0-24
+let tiles = [];
+let knownLines = new Set();
+let spinning = false;
+
+const MOON_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2a10 10 0 0 0 0 20z" fill="currentColor"/></svg>`;
+const SUN_SVG = `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><path d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/></svg>`;
+
+/* ---------- Helpers ---------- */
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function promptAt(pos) {
+  // board position -> PROMPTS entry (free space has none)
+  if (pos === FREE_INDEX) return null;
+  return PROMPTS[picks[pos < FREE_INDEX ? pos : pos - 1]];
+}
+
+function validPicks(list) {
+  return Array.isArray(list) && list.length === 24 &&
+    list.every(n => Number.isInteger(n) && n >= 0 && n < PROMPTS.length) &&
+    new Set(list).size === 24;
+}
+
+/* ---------- Saving ---------- */
+
+function saveState() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ picks, marked: [...marked] }));
+  } catch (e) { /* storage unavailable (e.g. private mode) — play continues, just won't persist */ }
+}
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SAVE_KEY));
+    if (!s || !validPicks(s.picks)) return null;
+    return s;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ---------- Theme ---------- */
+
+function applyTheme(theme) {
+  document.body.className = theme;
+  const next = theme === "dark" ? "light" : "dark";
+  for (const btn of themeBtns) {
+    btn.innerHTML = theme === "dark" ? MOON_SVG : SUN_SVG;
+    btn.setAttribute("aria-label", `Switch to ${next} mode`);
+  }
+}
+
+function toggleTheme() {
+  const theme = document.body.classList.contains("dark") ? "light" : "dark";
+  try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+  applyTheme(theme);
+}
+
+/* ---------- Board ---------- */
+
+function renderPlaceholder() {
+  boardEl.innerHTML = "";
+  tiles = [];
+  for (let i = 0; i < 25; i++) {
+    const t = document.createElement("div");
+    t.className = "tile placeholder";
+    t.setAttribute("aria-hidden", "true");
+    boardEl.appendChild(t);
+  }
+}
+
+function renderBoard() {
+  boardEl.innerHTML = "";
+  boardEl.setAttribute("aria-label", "Bingo board, 5 by 5");
+  tiles = [];
+
+  for (let i = 0; i < 25; i++) {
+    let tile;
+    if (i === FREE_INDEX) {
+      tile = document.createElement("div");
+      tile.className = "tile free checked";
+      tile.setAttribute("aria-label", "Free space");
+      tile.innerHTML = `<span class="stamp"></span>`;
+    } else {
+      tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = "tile";
+      const label = document.createElement("span");
+      label.className = "tile-label";
+      label.textContent = promptAt(i).text;
+      const stamp = document.createElement("span");
+      stamp.className = "stamp";
+      tile.append(stamp, label);
+      tile.setAttribute("aria-label", promptAt(i).text);
+      tile.setAttribute("aria-pressed", marked.has(i) ? "true" : "false");
+      if (marked.has(i)) tile.classList.add("checked");
+      tile.addEventListener("click", () => toggleTile(i));
+    }
+    tiles.push(tile);
+    boardEl.appendChild(tile);
+  }
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.classList.add("bingo-lines");
+  svg.setAttribute("aria-hidden", "true");
+  boardEl.appendChild(svg);
+
+  shareBtn.disabled = false;
+  shareBtn.removeAttribute("title");
+  fitLabels();
+}
+
+// Shrink long prompts until they fit inside their square without splitting words
+function fitLabels() {
+  for (const tile of tiles) {
+    const label = tile.querySelector(".tile-label");
+    if (!label) continue;
+    label.style.fontSize = "";
+    label.style.overflowWrap = "normal";
+    const style = getComputedStyle(tile);
+    const room = tile.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+    let size = parseFloat(getComputedStyle(label).fontSize);
+    while ((label.scrollHeight > room || label.scrollWidth > label.clientWidth) && size > 9) {
+      size -= 0.5;
+      label.style.fontSize = size + "px";
+    }
+    // at the smallest size, let a too-long word break rather than spill out
+    label.style.overflowWrap = "";
+  }
+}
+
+function generateBoard() {
+  if (spinning) return;
+  if (PROMPTS.length < 24) {
+    alert("Add at least 24 prompts to the PROMPTS list to fill a board.");
+    return;
+  }
+  picks = shuffle([...PROMPTS.keys()]).slice(0, 24);
+  marked = new Set([FREE_INDEX]);
+  knownLines = new Set();
+  renderBoard();
+  updateWins(false);
+  saveState();
+  renderDictionary();
+  spinBoard();
+}
+
+// Slot-machine reveal: each square cycles through random prompts, then lands left to right
+function spinBoard() {
+  if (reduceMotion) return;
+  spinning = true;
+  let remaining = 0;
+  tiles.forEach((tile, i) => {
+    if (i === FREE_INDEX) return;
+    const label = tile.querySelector(".tile-label");
+    const finalText = label.textContent;
+    const finalSize = label.style.fontSize;
+    const row = Math.floor(i / 5), col = i % 5;
+    remaining++;
+    tile.classList.add("spinning");
+    tile.disabled = true;
+    const timer = setInterval(() => {
+      label.textContent = PROMPTS[Math.floor(Math.random() * PROMPTS.length)].text;
+    }, 70);
+    setTimeout(() => {
+      clearInterval(timer);
+      label.textContent = finalText;
+      label.style.fontSize = finalSize;
+      tile.classList.remove("spinning");
+      tile.classList.add("landed");
+      tile.disabled = false;
+      setTimeout(() => tile.classList.remove("landed"), 300);
+      if (--remaining === 0) spinning = false;
+    }, 350 + col * 110 + row * 70 + Math.random() * 80);
+  });
+}
+
+function toggleTile(i) {
+  if (spinning) return;
+  const tile = tiles[i];
+  if (marked.has(i)) {
+    marked.delete(i);
+    tile.classList.remove("checked");
+    tile.setAttribute("aria-pressed", "false");
+  } else {
+    marked.add(i);
+    tile.classList.add("checked");
+    tile.setAttribute("aria-pressed", "true");
+  }
+  updateWins(true);
+  saveState();
+}
+
+/* ---------- Bingo detection + lines ---------- */
+
+function allLines() {
+  const out = [];
+  for (let r = 0; r < 5; r++) out.push({ key: "r" + r, cells: [0, 1, 2, 3, 4].map(c => r * 5 + c) });
+  for (let c = 0; c < 5; c++) out.push({ key: "c" + c, cells: [0, 1, 2, 3, 4].map(r => r * 5 + c), vertical: true });
+  out.push({ key: "d1", cells: [0, 6, 12, 18, 24] });
+  out.push({ key: "d2", cells: [4, 8, 12, 16, 20] });
+  return out;
+}
+
+function updateWins(celebrate) {
+  const complete = allLines().filter(l => l.cells.every(i => marked.has(i)));
+  const blackout = marked.size === 25;
+  const fresh = complete.filter(l => !knownLines.has(l.key));
+
+  drawLines(complete, celebrate ? new Set(fresh.map(l => l.key)) : null);
+  knownLines = new Set(complete.map(l => l.key));
+
+  const text = blackout ? "Blackout!" : "Bingo!";
+  winnerText.textContent = text;
+  const winning = complete.length > 0;
+  winReveal.classList.toggle("show", winning);
+  winReveal.setAttribute("aria-hidden", winning ? "false" : "true");
+
+  if (celebrate && fresh.length) {
+    winAnnouncement.textContent = text;
+    if (navigator.vibrate) navigator.vibrate(blackout ? [80, 40, 80, 40, 160] : [60, 40, 60]);
+  } else if (!winning) {
+    winAnnouncement.textContent = "";
+  }
+}
+
+// Hand-drawn style line through the centers of a winning row, column or diagonal
+function linePath(cells, w, h) {
+  const pts = cells.map(i => ({
+    x: ((i % 5) + 0.5) * w / 5,
+    y: (Math.floor(i / 5) + 0.5) * h / 5
+  }));
+  // pull the ends in a little and add a gentle wobble between points
+  const first = pts[0], last = pts[4];
+  const dx = last.x - first.x, dy = last.y - first.y;
+  const len = Math.hypot(dx, dy);
+  const nx = -dy / len, ny = dx / len;
+  const wobble = Math.min(w, h) * 0.012;
+  const jittered = pts.map((p, k) => {
+    const j = (k === 0 || k === 4) ? 0 : (Math.random() * 2 - 1) * wobble;
+    return { x: p.x + nx * j, y: p.y + ny * j };
+  });
+  jittered[0] = { x: first.x - dx * 0.07, y: first.y - dy * 0.07 };
+  jittered[4] = { x: last.x + dx * 0.07, y: last.y + dy * 0.07 };
+
+  let d = `M${jittered[0].x.toFixed(1)} ${jittered[0].y.toFixed(1)}`;
+  for (let k = 1; k < jittered.length; k++) {
+    const p0 = jittered[k - 2] || jittered[k - 1];
+    const p1 = jittered[k - 1];
+    const p2 = jittered[k];
+    const p3 = jittered[k + 1] || p2;
+    const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+    const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+    d += ` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return { d, start: jittered[0], end: jittered[4] };
+}
+
+function drawLines(lines, animateKeys) {
+  const svg = boardEl.querySelector(".bingo-lines");
+  if (!svg) return;
+  const w = boardEl.clientWidth, h = boardEl.clientHeight;
+  svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+
+  // Keep existing lines (so they don't redraw), remove broken ones, add new ones
+  const keep = new Set(lines.map(l => l.key));
+  for (const g of [...svg.querySelectorAll("g")]) {
+    if (!keep.has(g.dataset.key)) g.remove();
+  }
+  let defs = svg.querySelector("defs");
+  if (!defs) {
+    defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    svg.appendChild(defs);
+  }
+
+  for (const line of lines) {
+    if (svg.querySelector(`g[data-key="${line.key}"]`)) continue;
+    const { d, start, end } = linePath(line.cells, w, h);
+    const gradId = "grad-" + line.key;
+    defs.querySelector("#" + gradId)?.remove();
+    const grad = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+    grad.id = gradId;
+    grad.setAttribute("gradientUnits", "userSpaceOnUse");
+    grad.setAttribute("x1", start.x); grad.setAttribute("y1", start.y);
+    grad.setAttribute("x2", end.x); grad.setAttribute("y2", end.y);
+    grad.innerHTML = `<stop offset="0" stop-color="#a53ce2"/><stop offset="1" stop-color="#1cb654"/>`;
+    defs.appendChild(grad);
+
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.dataset.key = line.key;
+    if (line.vertical) g.classList.add("vertical");
+    if (!animateKeys || !animateKeys.has(line.key)) g.style.animation = "none";
+    g.innerHTML = `<path class="outline" d="${d}"/><path class="marker" d="${d}" stroke="url(#${gradId})"/>`;
+    svg.appendChild(g);
+  }
+}
+
+function redrawLinesForResize() {
+  const svg = boardEl.querySelector(".bingo-lines");
+  if (!svg) return;
+  svg.querySelectorAll("g").forEach(g => g.remove());
+  const complete = allLines().filter(l => l.cells.every(i => marked.has(i)));
+  drawLines(complete, null);
+}
+
+/* ---------- Share ---------- */
+
+function shareUrl() {
+  const url = new URL(window.location.href);
+  url.hash = "";
+  url.search = "";
+  url.searchParams.set("board", picks.join("."));
+  return url.toString();
+}
+
+function flashShareLabel(text) {
+  const original = shareLabel.innerHTML;
+  shareLabel.textContent = text;
+  setTimeout(() => { shareLabel.innerHTML = original; }, 1600);
+}
+
+async function shareBoard() {
+  if (!picks.length) return;
+  const url = shareUrl();
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: "Slopfest Bingo", text: "Play my Slopfest Bingo board", url });
+      return;
+    } catch (e) {
+      if (e && e.name === "AbortError") return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    flashShareLabel("Copied!");
+  } catch (e) {
+    window.prompt("Copy this link to share your board:", url);
+  }
+}
+
+function boardFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get("board");
+  if (!raw) return null;
+  const list = raw.split(".").map(Number);
+  // drop the board from the address bar so a refresh doesn't keep resetting progress
+  history.replaceState(null, "", window.location.pathname);
+  return validPicks(list) ? list : null;
+}
+
+/* ---------- Rules panel + Square guide ---------- */
+
+function renderDictionary() {
+  dictionaryList.innerHTML = "";
+  const source = showAllToggle.checked || !picks.length
+    ? PROMPTS
+    : picks.map(n => PROMPTS[n]);
+  const items = [...source].sort((a, b) => a.text.localeCompare(b.text, undefined, { numeric: true }));
+
+  if (!items.length) {
+    const li = document.createElement("li");
+    li.className = "dictionary-empty";
+    li.textContent = "No terms yet.";
+    dictionaryList.appendChild(li);
+    return;
+  }
+
+  for (const item of items) {
+    const li = document.createElement("li");
+    li.className = "dictionary-entry";
+    const term = document.createElement("h3");
+    term.className = "dictionary-term";
+    term.textContent = item.text;
+    li.appendChild(term);
+    if (item.desc) {
+      const desc = document.createElement("p");
+      desc.className = "dictionary-description";
+      desc.textContent = item.desc;
+      li.appendChild(desc);
+    }
+    dictionaryList.appendChild(li);
+  }
+}
+
+function openRules() {
+  renderDictionary();
+  rulesPanel.classList.add("open");
+  panelOverlay.classList.add("open");
+  rulesBtn.setAttribute("aria-expanded", "true");
+  document.body.style.overflow = "hidden";
+  closeBtn.focus();
+}
+
+function closeRules() {
+  rulesPanel.classList.remove("open");
+  panelOverlay.classList.remove("open");
+  rulesBtn.setAttribute("aria-expanded", "false");
+  document.body.style.overflow = "";
+  rulesBtn.focus();
+}
+
+/* ---------- Wire up ---------- */
+
+generateBtn.addEventListener("click", generateBoard);
+shareBtn.addEventListener("click", shareBoard);
+themeBtns.forEach(btn => btn.addEventListener("click", toggleTheme));
+rulesBtn.addEventListener("click", openRules);
+closeBtn.addEventListener("click", closeRules);
+panelOverlay.addEventListener("click", closeRules);
+showAllToggle.addEventListener("change", renderDictionary);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && rulesPanel.classList.contains("open")) closeRules();
+});
+
+let resizeTimer;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => { fitLabels(); redrawLinesForResize(); }, 120);
+});
+
+applyTheme(document.body.classList.contains("light") ? "light" : "dark");
+
+// A shared link deals that exact board; otherwise restore the saved one
+const shared = boardFromUrl();
+const saved = loadState();
+if (shared) {
+  picks = shared;
+  marked = new Set([FREE_INDEX]);
+  renderBoard();
+  updateWins(false);
+  saveState();
+} else if (saved) {
+  picks = saved.picks;
+  marked = new Set(saved.marked.filter(n => Number.isInteger(n) && n >= 0 && n < 25));
+  marked.add(FREE_INDEX);
+  renderBoard();
+  updateWins(false);
+} else {
+  renderPlaceholder();
+}
+renderDictionary();
+document.fonts?.ready.then(() => { fitLabels(); redrawLinesForResize(); });
+</script>
+</body>
+</html>
